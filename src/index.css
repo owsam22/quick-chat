@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #FFF9F0;
+  --color-cream-dark: #FFF0DC;
+  --color-warmwhite: #FFFDFB;
+  --color-coral: #E8735A;
+  --color-coral-light: #FDEBE7;
+  --color-coral-dark: #C9563E;
+  --color-sage: #7BAE7F;
+  --color-sage-light: #E8F5E9;
+  --color-sage-dark: #5A8F5E;
+  --color-sand: #D4A574;
+  --color-sand-light: #F5E6D3;
+  --color-clay: #B07D62;
+  --color-bark: #5D4037;
+  --color-bark-light: #8D6E63;
+  --color-linen: #FAF0E6;
+  --color-teal: #5B9EA6;
+  --color-teal-light: #E0F2F4;
+  --color-teal-dark: #3D7A82;
+  --color-golden: #E8A640;
+  --color-golden-light: #FFF3D6;
+}
+
+@font-face {
+  font-family: 'emoji';
+  src: local('Apple Color Emoji'), local('Segoe UI Emoji'), local('Noto Color Emoji');
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #D4A574 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #D4A574;
+  border-radius: 20px;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: #FFF9F0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.5s ease-out forwards;
+}
+
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+.msg-bubble {
+  animation: fadeInUp 0.25s ease-out forwards;
+}
