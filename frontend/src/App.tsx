@@ -23,11 +23,21 @@ function App() {
     const [activeTab, setActiveTab] = useState('chat'); // 'chat', 'search', 'newRoom', 'settings'
     const [copied, setCopied] = useState(false);
     const [showQR, setShowQR] = useState(false);
+    const [error, setError] = useState('');
     const [darkMode, setDarkMode] = useState(() => {
         return localStorage.getItem('glowchat-theme') === 'dark';
     });
 
     const bottomRef = useRef<HTMLDivElement>(null);
+
+    // Parse URL for room code
+    useEffect(() => {
+        const queryParams = new URLSearchParams(window.location.search);
+        const roomCode = queryParams.get('room');
+        if (roomCode) {
+            setRoom(roomCode);
+        }
+    }, []);
 
     // Apply Theme
     useEffect(() => {
@@ -35,10 +45,31 @@ function App() {
         localStorage.setItem('glowchat-theme', darkMode ? 'dark' : 'light');
     }, [darkMode]);
 
-    const joinRoom = () => {
-        if (username !== '' && room !== '') {
+    const joinRoom = (isCreating = false) => {
+        if (username === '') {
+            setError('Please enter a display name');
+            return;
+        }
+        if (room === '') {
+            setError('Please enter a room code');
+            return;
+        }
+
+        if (isCreating) {
+            socket.emit('create_room', room);
             socket.emit('join_room', { room, username });
             setShowChat(true);
+            setError('');
+        } else {
+            socket.emit('check_room', room, (response: { exists: boolean }) => {
+                if (response.exists) {
+                    socket.emit('join_room', { room, username });
+                    setShowChat(true);
+                    setError('');
+                } else {
+                    setError('Room does not exist or has expired');
+                }
+            });
         }
     };
 
@@ -86,6 +117,7 @@ function App() {
                 room={room}
                 setRoom={setRoom}
                 joinRoom={joinRoom}
+                error={error}
             />
         );
     }

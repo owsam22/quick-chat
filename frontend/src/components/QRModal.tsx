@@ -16,7 +16,7 @@ const QRModal: React.FC<QRModalProps> = ({ room, onClose }) => {
                 <p>Scan this QR to join room #{room} directly.</p>
                 <div className="qr-wrapper">
                     <QRCodeCanvas
-                        value={JSON.stringify({ room, type: 'chat-join' })}
+                        value={`${window.location.origin}${window.location.pathname}?room=${room}`}
                         size={200}
                         level="H"
                         includeMargin={true}

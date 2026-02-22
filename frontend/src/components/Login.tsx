@@ -6,11 +6,12 @@ interface LoginProps {
     setUsername: (name: string) => void;
     room: string;
     setRoom: (room: string) => void;
-    joinRoom: () => void;
+    joinRoom: (isCreating?: boolean) => void;
+    error?: string;
 }
 
-const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joinRoom }) => {
-    const [mode, setMode] = useState<'selection' | 'join' | 'create'>('selection');
+const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joinRoom, error }) => {
+    const [mode, setMode] = useState<'selection' | 'join' | 'create'>(room ? 'join' : 'selection');
 
     const handleCreateRoom = () => {
         if (!username) {
@@ -53,6 +54,20 @@ const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joi
                 </div>
             </div>
 
+            {error && (
+                <div className="error-message" style={{
+                    color: '#ef4444',
+                    fontSize: '0.85rem',
+                    background: '#fef2f2',
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    border: '1px solid #fee2e2',
+                    marginTop: '10px'
+                }}>
+                    {error}
+                </div>
+            )}
+
             {mode === 'selection' && (
                 <div className="login-actions" style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '10px' }}>
                     <button className="btn-primary" onClick={handleCreateRoom}>
@@ -92,7 +107,7 @@ const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joi
                             />
                         </div>
                     </div>
-                    <button className="btn-primary" style={{ marginTop: '20px' }} onClick={joinRoom}>
+                    <button className="btn-primary" style={{ marginTop: '20px' }} onClick={() => joinRoom(true)}>
                         Initialize Space <Zap size={18} />
                     </button>
                     <button onClick={() => setMode('selection')} style={{ display: 'block', margin: '15px auto 0', background: 'none', border: 'none', color: '#64748b', fontSize: '0.85rem', cursor: 'pointer' }}>
@@ -116,7 +131,7 @@ const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joi
                             />
                         </div>
                     </div>
-                    <button className="btn-primary" style={{ marginTop: '20px' }} onClick={joinRoom}>
+                    <button className="btn-primary" style={{ marginTop: '20px' }} onClick={() => joinRoom(false)}>
                         Enter Room <Zap size={18} />
                     </button>
                     <button onClick={() => setMode('selection')} style={{ display: 'block', margin: '15px auto 0', background: 'none', border: 'none', color: '#64748b', fontSize: '0.85rem', cursor: 'pointer' }}>
