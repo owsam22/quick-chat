@@ -11,7 +11,7 @@ import SearchTab from './components/SearchTab';
 import NewRoomTab from './components/NewRoomTab';
 import SettingsTab from './components/SettingsTab';
 
-const socket = io('http://localhost:5000');
+const socket = io(import.meta.env.VITE_API_URL);
 
 function App() {
     const [username, setUsername] = useState('');
