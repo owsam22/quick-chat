@@ -47,7 +47,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                     <div className="chat-room-info">
                         <h3>#{room}</h3>
                         <div className="room-badge">
-                            <Zap size={14} className="text-primary" /> {participantCount} Online
+                            <Zap size={14} color='#00d000ff' className="text-primary" /> {participantCount} Online
                         </div>
                     </div>
                 </div>
