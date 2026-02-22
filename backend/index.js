@@ -19,6 +19,11 @@ const PORT = process.env.PORT || 5000;
 // Track active rooms
 const activeRooms = new Set();
 
+const sendRoomCount = (room) => {
+    const count = io.sockets.adapter.rooms.get(room)?.size || 0;
+    io.in(room).emit('room_count', { count });
+};
+
 io.on('connection', (socket) => {
     console.log(`User Connected: ${socket.id}`);
 
@@ -42,6 +47,9 @@ io.on('connection', (socket) => {
         socket.join(room);
         console.log(`User ${username} with ID: ${socket.id} joined room: ${room}`);
 
+        // Send updated count to room
+        sendRoomCount(room);
+
         // Notify others in the room
         socket.to(room).emit('receive_message', {
             author: 'System',
@@ -53,6 +61,17 @@ io.on('connection', (socket) => {
 
     socket.on('send_message', (data) => {
         socket.to(data.room).emit('receive_message', data);
+    });
+
+    socket.on('disconnecting', () => {
+        // Send updated count to all rooms this socket was in before it leaves
+        for (const room of socket.rooms) {
+            if (room !== socket.id) {
+                // We need to wait a tick or manually subtract 1 because the socket is still in the room
+                const count = (io.sockets.adapter.rooms.get(room)?.size || 1) - 1;
+                io.in(room).emit('room_count', { count: Math.max(0, count) });
+            }
+        }
     });
 
     socket.on('disconnect', () => {

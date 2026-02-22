@@ -1,32 +1,55 @@
 import React, { useState } from 'react';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Menu } from 'lucide-react';
 
-const NewRoomTab = () => {
+interface NewRoomTabProps {
+    onMobileMenuToggle: () => void;
+}
+
+const NewRoomTab: React.FC<NewRoomTabProps> = ({ onMobileMenuToggle }) => {
     const [newRoomName, setNewRoomName] = useState('');
 
     const handleCreate = () => {
+        if (!newRoomName) return;
         const code = Math.random().toString(36).substring(2, 10).toUpperCase();
-        alert(`Created room: ${newRoomName} with ID: ${code}`);
+        alert(`Room "${newRoomName}" initialized. Logic to transition would go here. Code: ${code}`);
+        setNewRoomName('');
     };
 
     return (
         <div className="tab-view-content">
             <div className="view-header">
-                <PlusCircle size={24} />
-                <h2>Create New Space</h2>
+                <button className="mobile-toggle" onClick={onMobileMenuToggle}>
+                    <Menu size={20} />
+                </button>
+                <PlusCircle size={28} className="text-primary" />
+                <h2>Initialize Space</h2>
             </div>
-            <div className="new-room-form">
+
+            <div className="form-card glass-card">
                 <div className="input-group">
-                    <label>Room Name</label>
-                    <input
-                        type="text"
-                        placeholder="e.g. Project Alpha"
-                        value={newRoomName}
-                        onChange={(e) => setNewRoomName(e.target.value)}
-                    />
+                    <label>Identity of Space</label>
+                    <div className="input-field-wrapper">
+                        <PlusCircle size={18} />
+                        <input
+                            type="text"
+                            placeholder="e.g. Project Andromeda"
+                            value={newRoomName}
+                            onChange={(e) => setNewRoomName(e.target.value)}
+                        />
+                    </div>
                 </div>
-                <button className="btn-primary" style={{ marginTop: '20px' }} onClick={handleCreate}>
-                    Initialize New Room
+
+                <p className="form-helper">
+                    Creating a new space will generate a unique security signature for invited participants.
+                </p>
+
+                <button
+                    className="btn-primary"
+                    onClick={handleCreate}
+                    disabled={!newRoomName}
+                    style={{ marginTop: '12px' }}
+                >
+                    Create Secure Channel
                 </button>
             </div>
         </div>

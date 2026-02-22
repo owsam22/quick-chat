@@ -24,6 +24,7 @@ function App() {
     const [copied, setCopied] = useState(false);
     const [showQR, setShowQR] = useState(false);
     const [error, setError] = useState('');
+    const [participantCount, setParticipantCount] = useState(0);
     const [darkMode, setDarkMode] = useState(() => {
         return localStorage.getItem('glowchat-theme') === 'dark';
     });
@@ -99,9 +100,16 @@ function App() {
             setMessageList((list) => [...list, data]);
         };
 
+        const handleRoomCount = (data: { count: number }) => {
+            setParticipantCount(data.count);
+        };
+
         socket.on('receive_message', handleReceiveMessage);
+        socket.on('room_count', handleRoomCount);
+
         return () => {
             socket.off('receive_message', handleReceiveMessage);
+            socket.off('room_count', handleRoomCount);
         };
     }, []);
 
@@ -136,6 +144,7 @@ function App() {
                 <ChatArea
                     room={room}
                     username={username}
+                    participantCount={participantCount}
                     messageList={messageList}
                     currentMessage={currentMessage}
                     setCurrentMessage={setCurrentMessage}
@@ -148,9 +157,15 @@ function App() {
                 />
             )}
 
-            {activeTab === 'search' && <SearchTab />}
-            {activeTab === 'newRoom' && <NewRoomTab />}
-            {activeTab === 'settings' && <SettingsTab darkMode={darkMode} setDarkMode={setDarkMode} />}
+            {activeTab === 'search' && <SearchTab onMobileMenuToggle={() => setSidebarOpen(true)} />}
+            {activeTab === 'newRoom' && <NewRoomTab onMobileMenuToggle={() => setSidebarOpen(true)} />}
+            {activeTab === 'settings' && (
+                <SettingsTab
+                    darkMode={darkMode}
+                    setDarkMode={setDarkMode}
+                    onMobileMenuToggle={() => setSidebarOpen(true)}
+                />
+            )}
 
             {showQR && <QRModal room={room} onClose={() => setShowQR(false)} />}
         </div>

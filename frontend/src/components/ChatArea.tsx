@@ -20,6 +20,7 @@ interface ChatAreaProps {
     onShowQR: () => void;
     copied: boolean;
     bottomRef: React.RefObject<HTMLDivElement>;
+    participantCount: number;
 }
 
 const ChatArea: React.FC<ChatAreaProps> = ({
@@ -33,7 +34,8 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     onCopyRoomId,
     onShowQR,
     copied,
-    bottomRef
+    bottomRef,
+    participantCount
 }) => {
     return (
         <div className="chat-main">
@@ -45,7 +47,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                     <div className="chat-room-info">
                         <h3>#{room}</h3>
                         <div className="room-badge">
-                            <Zap size={14} className="text-primary" /> Active
+                            <Zap size={14} className="text-primary" /> {participantCount} Online
                         </div>
                     </div>
                 </div>
