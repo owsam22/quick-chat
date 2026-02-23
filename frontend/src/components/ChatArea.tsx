@@ -55,6 +55,42 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     const [replyTo, setReplyTo] = React.useState<Message | null>(null);
     const typingTimeoutRef = React.useRef<any>(null);
 
+    // Swipe state
+    const [touchStartX, setTouchStartX] = React.useState<number | null>(null);
+    const [swipeDistance, setSwipeDistance] = React.useState<{ [key: string]: number }>({});
+
+    const handleTouchStart = (e: React.TouchEvent, msgId: string) => {
+        setTouchStartX(e.touches[0].clientX);
+    };
+
+    const handleTouchMove = (e: React.TouchEvent, msgId: string) => {
+        if (touchStartX === null) return;
+        const currentX = e.touches[0].clientX;
+        const diff = currentX - touchStartX;
+
+        // Only allow swiping to the right (positive diff) if it's not a system message
+        if (diff > 0 && diff < 100) {
+            setSwipeDistance(prev => ({ ...prev, [msgId]: diff }));
+        }
+    };
+
+    const handleTouchEnd = (msg: Message) => {
+        if (swipeDistance[msg.id] > 50) {
+            setReplyTo(msg);
+        }
+        setTouchStartX(null);
+        setSwipeDistance(prev => ({ ...prev, [msg.id]: 0 }));
+    };
+
+    const getAuthorColor = (name: string) => {
+        const colors = ['var(--user-1)', 'var(--user-2)', 'var(--user-3)', 'var(--user-4)', 'var(--user-5)', 'var(--user-6)'];
+        let hash = 0;
+        for (let i = 0; i < name.length; i++) {
+            hash = name.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        return colors[Math.abs(hash) % colors.length];
+    };
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCurrentMessage(e.target.value);
 
@@ -153,35 +189,59 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                     <div
                         key={index}
                         className={`message-wrapper ${msg.isSystem ? 'system' : msg.author === username ? 'sent' : 'received'}`}
+                        onTouchStart={(e) => !msg.isSystem && handleTouchStart(e, msg.id)}
+                        onTouchMove={(e) => !msg.isSystem && handleTouchMove(e, msg.id)}
+                        onTouchEnd={() => !msg.isSystem && handleTouchEnd(msg)}
                     >
                         {!msg.isSystem && (
                             <button
-                                className="reply-action"
+                                className="reply-action desktop-only"
                                 title="Reply"
                                 onClick={() => setReplyTo(msg)}
                             >
                                 <Reply size={14} />
                             </button>
                         )}
-                        <div className="message-bubble">
-                            {msg.replyTo && (
-                                <div className="reply-quote" onClick={() => {
-                                    const element = document.getElementById(`msg-${msg.replyTo?.id}`);
-                                    element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                        <div
+                            className="message-bubble-container"
+                            style={{
+                                transform: `translateX(${swipeDistance[msg.id] || 0}px)`,
+                            }}
+                        >
+                            {!msg.isSystem && swipeDistance[msg.id] > 20 && (
+                                <div className="swipe-indicator" style={{
+                                    opacity: Math.min(swipeDistance[msg.id] / 50, 1),
+                                    right: 'auto',
+                                    left: '-30px'
                                 }}>
-                                    <div className="reply-author">{msg.replyTo.author}</div>
-                                    <div className="reply-text">{msg.replyTo.message}</div>
+                                    <Reply size={20} />
                                 </div>
                             )}
-                            <div id={`msg-${msg.id}`}>{msg.message}</div>
-                        </div>
-                        {!msg.isSystem && (
-                            <div className="message-meta">
-                                <span>{msg.author}</span>
-                                <span>•</span>
-                                <span>{msg.time}</span>
+
+                            <div className="message-bubble">
+                                {msg.replyTo && (
+                                    <div className="reply-quote" onClick={() => {
+                                        const element = document.getElementById(`msg-${msg.replyTo?.id}`);
+                                        element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    }}>
+                                        <div className="reply-author" style={{ color: getAuthorColor(msg.replyTo.author) }}>
+                                            {msg.replyTo.author}
+                                        </div>
+                                        <div className="reply-text">{msg.replyTo.message}</div>
+                                    </div>
+                                )}
+                                <div id={`msg-${msg.id}`}>{msg.message}</div>
                             </div>
-                        )}
+
+                            {!msg.isSystem && (
+                                <div className="message-meta">
+                                    <span>{msg.author}</span>
+                                    <span>•</span>
+                                    <span>{msg.time}</span>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 ))}
 
@@ -200,7 +260,9 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                 {replyTo && (
                     <div className="reply-preview-container">
                         <div className="reply-preview-content">
-                            <div className="reply-author">Replying to {replyTo.author}</div>
+                            <div className="reply-author" style={{ color: getAuthorColor(replyTo.author) }}>
+                                Replying to {replyTo.author}
+                            </div>
                             <div className="reply-text">{replyTo.message}</div>
                         </div>
                         <button className="icon-btn" onClick={() => setReplyTo(null)}>
