@@ -16,12 +16,13 @@ const io = new Server(server, {
 
 const PORT = process.env.PORT || 5000;
 
-// Track active rooms
-const activeRooms = new Set();
+// Track active rooms and their users
+const activeRooms = new Map(); // room -> Set of usernames
 
-const sendRoomCount = (room) => {
+const sendRoomUpdate = (room) => {
     const count = io.sockets.adapter.rooms.get(room)?.size || 0;
-    io.in(room).emit('room_count', { count });
+    const users = Array.from(activeRooms.get(room) || []);
+    io.in(room).emit('room_update', { count, users });
 };
 
 io.on('connection', (socket) => {
@@ -34,21 +35,31 @@ io.on('connection', (socket) => {
     });
 
     socket.on('create_room', (room) => {
-        activeRooms.add(room);
+        if (!activeRooms.has(room)) {
+            activeRooms.set(room, new Set());
+        }
         console.log(`Room Created: ${room}`);
     });
 
     socket.on('join_room', (data) => {
         const { room, username } = data;
 
-        // Ensure room is marked as active when joined (fallback)
-        activeRooms.add(room);
+        // Ensure room is marked as active when joined
+        if (!activeRooms.has(room)) {
+            activeRooms.set(room, new Set());
+        }
+
+        // Store user info in socket
+        socket.username = username;
+        socket.room = room;
+
+        activeRooms.get(room).add(username);
 
         socket.join(room);
         console.log(`User ${username} with ID: ${socket.id} joined room: ${room}`);
 
-        // Send updated count to room
-        sendRoomCount(room);
+        // Send updated info to room
+        sendRoomUpdate(room);
 
         // Notify others in the room
         socket.to(room).emit('receive_message', {
@@ -64,13 +75,29 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnecting', () => {
-        // Send updated count to all rooms this socket was in before it leaves
-        for (const room of socket.rooms) {
-            if (room !== socket.id) {
-                // We need to wait a tick or manually subtract 1 because the socket is still in the room
-                const count = (io.sockets.adapter.rooms.get(room)?.size || 1) - 1;
-                io.in(room).emit('room_count', { count: Math.max(0, count) });
+        const username = socket.username;
+        const room = socket.room;
+
+        if (username && room) {
+            const roomUsers = activeRooms.get(room);
+            if (roomUsers) {
+                roomUsers.delete(username);
+                // If room empty, we could delete it, but let's keep it for now
+                // if (roomUsers.size === 0) activeRooms.delete(room);
             }
+
+            // Notify others
+            socket.to(room).emit('receive_message', {
+                author: 'System',
+                message: `${username} has left the conversation`,
+                time: new Date(Date.now()).getHours() + ":" + new Date(Date.now()).getMinutes().toString().padStart(2, '0'),
+                isSystem: true
+            });
+
+            // Delay update slightly to ensure socket is gone from adapter
+            setTimeout(() => {
+                sendRoomUpdate(room);
+            }, 100);
         }
     });
 

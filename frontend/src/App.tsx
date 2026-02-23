@@ -25,6 +25,7 @@ function App() {
     const [showQR, setShowQR] = useState(false);
     const [error, setError] = useState('');
     const [participantCount, setParticipantCount] = useState(0);
+    const [roomUsers, setRoomUsers] = useState<string[]>([]);
     const [darkMode, setDarkMode] = useState(() => {
         return localStorage.getItem('glowchat-theme') === 'dark';
     });
@@ -90,9 +91,33 @@ function App() {
     };
 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(room);
+        const shareLink = `${window.location.origin}${window.location.pathname}?room=${room}`;
+        navigator.clipboard.writeText(shareLink);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
+    };
+
+    const handleShare = async () => {
+        const shareData = {
+            title: 'Join my GlowChat Room',
+            text: `Hey! Join my chat room #${room} on GlowChat.`,
+            url: `${window.location.origin}${window.location.pathname}?room=${room}`
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                console.log('Error sharing:', err);
+                // Fallback to WhatsApp link if share fails or cancelled
+                const waUrl = `https://wa.me/?text=${encodeURIComponent(shareData.text + " " + shareData.url)}`;
+                window.open(waUrl, '_blank');
+            }
+        } else {
+            // Default to WhatsApp if Web Share API not supported
+            const waUrl = `https://wa.me/?text=${encodeURIComponent(shareData.text + " " + shareData.url)}`;
+            window.open(waUrl, '_blank');
+        }
     };
 
     useEffect(() => {
@@ -100,16 +125,17 @@ function App() {
             setMessageList((list) => [...list, data]);
         };
 
-        const handleRoomCount = (data: { count: number }) => {
+        const handleRoomUpdate = (data: { count: number, users: string[] }) => {
             setParticipantCount(data.count);
+            setRoomUsers(data.users);
         };
 
         socket.on('receive_message', handleReceiveMessage);
-        socket.on('room_count', handleRoomCount);
+        socket.on('room_update', handleRoomUpdate);
 
         return () => {
             socket.off('receive_message', handleReceiveMessage);
-            socket.off('room_count', handleRoomCount);
+            socket.off('room_update', handleRoomUpdate);
         };
     }, []);
 
@@ -145,6 +171,7 @@ function App() {
                     room={room}
                     username={username}
                     participantCount={participantCount}
+                    roomUsers={roomUsers}
                     messageList={messageList}
                     currentMessage={currentMessage}
                     setCurrentMessage={setCurrentMessage}
@@ -152,6 +179,7 @@ function App() {
                     onMobileMenuToggle={() => setSidebarOpen(true)}
                     onCopyRoomId={copyToClipboard}
                     onShowQR={() => setShowQR(true)}
+                    onShare={handleShare}
                     copied={copied}
                     bottomRef={bottomRef}
                 />
@@ -167,7 +195,7 @@ function App() {
                 />
             )}
 
-            {showQR && <QRModal room={room} onClose={() => setShowQR(false)} />}
+            {showQR && <QRModal room={room} onClose={() => setShowQR(false)} onShare={handleShare} />}
         </div>
     );
 }

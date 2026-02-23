@@ -63,6 +63,8 @@
 /* Layout */
 .chat-window-container {
     width: 100%;
+    height: 100vh;
+    /* Fallback */
     height: 100dvh;
     display: flex;
     overflow: hidden;
@@ -70,6 +72,8 @@
     background: var(--bg-main);
     padding-top: env(safe-area-inset-top, 0);
     padding-bottom: env(safe-area-inset-bottom, 0);
+    /* Safari Fixes */
+    -webkit-overflow-scrolling: touch;
 }
 
 @media (min-width: 1024px) {
@@ -258,6 +262,17 @@
 .chat-room-info h3 {
     font-size: 1.1rem;
     font-weight: 700;
+}
+
+.chat-room-info {
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.chat-room-info:hover {
+    background: var(--input-bg);
 }
 
 .room-badge {
@@ -547,6 +562,16 @@
     color: var(--primary);
 }
 
+.share-btn {
+    background: var(--primary);
+    color: white;
+}
+
+.share-btn:hover {
+    background: var(--primary-hover);
+    color: white;
+}
+
 .user-profile {
     display: flex;
     align-items: center;
@@ -799,6 +824,55 @@
 .input-field-wrapper input:focus {
     border-color: var(--primary);
     box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    outline: none;
+}
+
+/* Member List Overlay */
+.members-overlay {
+    position: absolute;
+    top: 80px;
+    left: 24px;
+    width: 250px;
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    z-index: 1001;
+    padding: 16px;
+    animation: fadeIn 0.2s ease;
+}
+
+.members-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.members-list {
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.member-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--text-main);
+}
+
+.member-status-dot {
+    width: 8px;
+    height: 8px;
+    background: #10b981;
+    border-radius: 50%;
 }
 
 .btn-primary {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Zap, User, Copy, QrCode, PlusCircle, Send, CheckCircle2, Hash } from 'lucide-react';
+import { Menu, Zap, User, Copy, QrCode, PlusCircle, Send, CheckCircle2, Hash, Share2, X } from 'lucide-react';
 
 interface Message {
     author: string;
@@ -18,9 +18,11 @@ interface ChatAreaProps {
     onMobileMenuToggle: () => void;
     onCopyRoomId: () => void;
     onShowQR: () => void;
+    onShare: () => void;
     copied: boolean;
     bottomRef: React.RefObject<HTMLDivElement>;
     participantCount: number;
+    roomUsers: string[];
 }
 
 const ChatArea: React.FC<ChatAreaProps> = ({
@@ -33,10 +35,14 @@ const ChatArea: React.FC<ChatAreaProps> = ({
     onMobileMenuToggle,
     onCopyRoomId,
     onShowQR,
+    onShare,
     copied,
     bottomRef,
-    participantCount
+    participantCount,
+    roomUsers
 }) => {
+    const [showMembers, setShowMembers] = React.useState(false);
+
     return (
         <div className="chat-main">
             <div className="chat-header">
@@ -44,7 +50,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                     <button className="mobile-toggle" onClick={onMobileMenuToggle}>
                         <Menu size={20} />
                     </button>
-                    <div className="chat-room-info">
+                    <div className="chat-room-info" onClick={() => setShowMembers(!showMembers)}>
                         <h3>#{room}</h3>
                         <div className="room-badge">
                             <Zap size={14} color='#00d000ff' className="text-primary" /> {participantCount} Online
@@ -53,11 +59,15 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                 </div>
 
                 <div className="header-actions">
-                    <div className="room-id-chip" onClick={onCopyRoomId} title="Click to Copy ID">
+                    <div className="room-id-chip" onClick={onCopyRoomId} title="Click to Copy Share Link">
                         <Hash size={16} className="text-primary" />
                         <span>{room}</span>
                         {copied ? <CheckCircle2 size={16} className="text-primary" /> : <Copy size={16} />}
                     </div>
+
+                    <button className="icon-btn share-btn desktop-only" title="Share Room" onClick={onShare}>
+                        <Share2 size={18} />
+                    </button>
 
                     <button className="icon-btn" title="Join QR" onClick={onShowQR}>
                         <QrCode size={18} />
@@ -71,6 +81,23 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                     </div>
                 </div>
             </div>
+
+            {showMembers && (
+                <div className="members-overlay">
+                    <div className="members-header">
+                        <span style={{ fontWeight: 700 }}>Active Members ({participantCount})</span>
+                        <button className="icon-btn" onClick={() => setShowMembers(false)}><X size={16} /></button>
+                    </div>
+                    <div className="members-list">
+                        {roomUsers.map((user, idx) => (
+                            <div key={idx} className="member-item">
+                                <div className="member-status-dot"></div>
+                                <span>{user} {user === username ? '(You)' : ''}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <div className="message-container">
                 {messageList.map((msg, index) => (
