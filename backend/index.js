@@ -48,7 +48,7 @@ io.on('connection', (socket) => {
         console.log(`Room Created: ${room}`);
     });
 
-    socket.on('join_room', (data) => {
+    socket.on('join_room', (data, callback) => {
         const { room, username } = data;
 
         // Ensure room is marked as active when joined
@@ -57,14 +57,28 @@ io.on('connection', (socket) => {
             typingUsers.set(room, new Set());
         }
 
+        const roomUsers = activeRooms.get(room);
+
+        // Case-insensitive username check
+        const isNameTaken = Array.from(roomUsers).some(
+            u => u.toLowerCase() === username.toLowerCase()
+        );
+
+        if (isNameTaken) {
+            if (callback) callback({ success: false, error: 'Display name already taken in this room' });
+            return;
+        }
+
         // Store user info in socket
         socket.username = username;
         socket.room = room;
 
-        activeRooms.get(room).add(username);
+        roomUsers.add(username);
 
         socket.join(room);
         console.log(`User ${username} with ID: ${socket.id} joined room: ${room}`);
+
+        if (callback) callback({ success: true });
 
         // Send updated info to room
         sendRoomUpdate(room);

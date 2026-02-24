@@ -34,11 +34,13 @@ function App() {
     const bottomRef = useRef<HTMLDivElement>(null);
 
     // Parse URL for room code
+    const [roomFromUrl, setRoomFromUrl] = useState(false);
     useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
         const roomCode = queryParams.get('room');
         if (roomCode) {
             setRoom(roomCode);
+            setRoomFromUrl(true);
         }
     }, []);
 
@@ -58,17 +60,22 @@ function App() {
             return;
         }
 
+        const handleJoinResponse = (response: { success: boolean, error?: string }) => {
+            if (response.success) {
+                setShowChat(true);
+                setError('');
+            } else {
+                setError(response.error || 'Failed to join space');
+            }
+        };
+
         if (isCreating) {
             socket.emit('create_room', room);
-            socket.emit('join_room', { room, username });
-            setShowChat(true);
-            setError('');
+            socket.emit('join_room', { room, username }, handleJoinResponse);
         } else {
             socket.emit('check_room', room, (response: { exists: boolean }) => {
                 if (response.exists) {
-                    socket.emit('join_room', { room, username });
-                    setShowChat(true);
-                    setError('');
+                    socket.emit('join_room', { room, username }, handleJoinResponse);
                 } else {
                     setError('Room does not exist or has expired');
                 }
@@ -160,6 +167,8 @@ function App() {
                 setRoom={setRoom}
                 joinRoom={joinRoom}
                 error={error}
+                roomFromUrl={roomFromUrl}
+                socket={socket}
             />
         );
     }

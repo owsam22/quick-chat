@@ -6,6 +6,7 @@ import {
     Settings,
     Bot,
     LogOut,
+    Github,
     X
 } from 'lucide-react';
 
@@ -40,20 +41,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, setActive
                         <MessageSquare size={18} />
                         <span>Active Chat</span>
                     </div>
-                    <div
+                    
+                    {/* <div
                         className={`menu-item ${activeTab === 'search' ? 'active' : ''}`}
                         onClick={() => { setActiveTab('search'); onClose(); }}
                     >
                         <Search size={18} />
                         <span>Global Search</span>
-                    </div>
-                    <div
+                    </div> */}
+
+                    {/* <div
                         className={`menu-item ${activeTab === 'newRoom' ? 'active' : ''}`}
                         onClick={() => { setActiveTab('newRoom'); onClose(); }}
                     >
                         <PlusCircle size={18} />
                         <span>New Room</span>
-                    </div>
+                    </div> */}
+
                     <div
                         className={`menu-item ${activeTab === 'settings' ? 'active' : ''}`}
                         onClick={() => { setActiveTab('settings'); onClose(); }}
@@ -64,12 +68,24 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, setActive
                 </div>
 
                 <div className="sidebar-footer">
-                    <div className="room-info-small" style={{ marginBottom: '12px' }}>
-                        <span className="dot"></span> Room: <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{room}</span>
+                    <div className="footer-actions">
+                        <div className="room-display">
+                            <span className="dot"></span>
+                            <span className="room-id">#{room}</span>
+                        </div>
+                        <button className="btn-logout-plain" onClick={() => window.location.reload()} title="Exit Session">
+                            <LogOut size={18} />
+                        </button>
                     </div>
-                    <button className="btn-logout" onClick={() => window.location.reload()}>
-                        <LogOut size={16} /> Exit Session
-                    </button>
+
+                    <div className="creator-footer">
+                        <div className="creator-details">
+                            Developed by <span>Sam</span>
+                        </div>
+                        <a href="https://github.com/owsam22" target="_blank" rel="noopener noreferrer" className="github-link">
+                            <Github size={14} /> github.com/owsam22
+                        </a>
+                    </div>
                 </div>
             </div>
         </>

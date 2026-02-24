@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { User, Hash, Zap, ShieldCheck, Bot, PlusSquare, ArrowRight } from 'lucide-react';
+﻿import React, { useState } from 'react';
+import { User, Hash, Zap, ShieldCheck, Bot, PlusSquare, ArrowRight, Github, AlertCircle, Lock } from 'lucide-react';
 
 interface LoginProps {
     username: string;
@@ -8,141 +8,182 @@ interface LoginProps {
     setRoom: (room: string) => void;
     joinRoom: (isCreating?: boolean) => void;
     error?: string;
+    roomFromUrl?: boolean;
+    socket: any;
 }
 
-const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joinRoom, error }) => {
-    const [mode, setMode] = useState<'selection' | 'join' | 'create'>(room ? 'join' : 'selection');
+const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joinRoom, error: externalError, roomFromUrl, socket }) => {
+    const [isCreating, setIsCreating] = useState(false);
+    const [localError, setLocalError] = useState('');
+    const [isChecking, setIsChecking] = useState(false);
+    const displayError = externalError || localError;
 
-    const handleCreateRoom = () => {
-        if (!username) {
-            alert("Please enter a display name first.");
-            return;
-        }
+    const clearError = () => { if (localError) setLocalError(''); };
+
+    const handleSwitchToCreate = () => {
+        setLocalError('');
         const code = Math.random().toString(36).substring(2, 10).toUpperCase();
         setRoom(code);
-        setMode('create');
+        setIsCreating(true);
     };
 
-    const handleJoinMode = () => {
-        if (!username) {
-            alert("Please enter a display name first.");
+    const handleSwitchToJoin = () => {
+        setLocalError('');
+        setRoom('');
+        setIsCreating(false);
+    };
+
+    const handleSubmit = () => {
+        if (!username.trim()) {
+            setLocalError('Please enter your display name first.');
             return;
         }
-        setMode('join');
+        if (!room.trim()) {
+            setLocalError('Please enter a room code.');
+            return;
+        }
+
+        if (isCreating) {
+            setLocalError('');
+            joinRoom(true);
+            return;
+        }
+
+        // For join mode: validate room exists first
+        setIsChecking(true);
+        setLocalError('');
+        socket.emit('check_room', room, (response: { exists: boolean }) => {
+            setIsChecking(false);
+            if (response.exists) {
+                joinRoom(false);
+            } else {
+                setLocalError('This room does not exist or has expired. Try creating a new one!');
+                setIsCreating(false);
+            }
+        });
     };
 
     return (
-        <div className="login-container glass-card">
-            <div className="login-header">
-                <div className="logo-container">
-                    <Bot size={32} />
-                </div>
-                <h1>Join QuickChat</h1>
-                <p>Premium AI-powered communication</p>
-            </div>
+        <div className="login-wrapper">
+            <div className="login-container glass-card">
 
-            <div className="input-group">
-                <label>Personal Identity</label>
-                <div className="input-field-wrapper">
-                    <User size={18} />
-                    <input
-                        type="text"
-                        placeholder="How should we call you?"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
+                {/* Header */}
+                <div className="login-header">
+                    <div className="logo-container">
+                        <Bot size={40} strokeWidth={2.5} className="text-primary" />
+                    </div>
+                    <h1>QuickChat <span>{isCreating ? 'Create' : 'Join'}</span></h1>
+                    <p>{isCreating ? 'Generate a new room and share the code' : 'Enter a room code to connect'}</p>
                 </div>
-            </div>
 
-            {error && (
-                <div className="error-message" style={{
-                    color: '#ef4444',
-                    fontSize: '0.85rem',
-                    background: '#fef2f2',
-                    padding: '8px 12px',
-                    borderRadius: '8px',
-                    border: '1px solid #fee2e2',
-                    marginTop: '10px'
-                }}>
-                    {error}
-                </div>
-            )}
+                {/* Mode Toggle — hidden if room was pre-filled from URL */}
+                {!roomFromUrl && (
+                    <div className="mode-toggle-row">
+                        <button
+                            className={`mode-toggle-btn ${!isCreating ? 'active' : ''}`}
+                            onClick={handleSwitchToJoin}
+                        >
+                            <ArrowRight size={15} /> Join Room
+                        </button>
+                        <button
+                            className={`mode-toggle-btn ${isCreating ? 'active' : ''}`}
+                            onClick={handleSwitchToCreate}
+                        >
+                            <PlusSquare size={15} /> Create Room
+                        </button>
+                    </div>
+                )}
 
-            {mode === 'selection' && (
-                <div className="login-actions" style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '10px' }}>
-                    <button className="btn-primary" onClick={handleCreateRoom}>
-                        <PlusSquare size={18} /> Create Secure Room
-                    </button>
-                    <button className="btn-secondary" onClick={handleJoinMode} style={{
-                        width: '100%',
-                        padding: '14px',
-                        borderRadius: '12px',
-                        border: '1px solid #e2e8f0',
-                        background: 'white',
-                        color: '#475569',
-                        fontWeight: '600',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px',
-                        transition: '0.2s'
-                    }}>
-                        <ArrowRight size={18} /> Join via ID / QR
-                    </button>
-                </div>
-            )}
-
-            {mode === 'create' && (
-                <div className="creation-flow" style={{ animation: 'fadeIn 0.3s ease' }}>
+                {/* Inputs */}
+                <div className="login-form">
                     <div className="input-group">
-                        <label>Generated Room ID</label>
-                        <div className="input-field-wrapper">
-                            <Hash size={18} />
+                        <label>Display Name</label>
+                        <div className={`input-field-wrapper ${!username && displayError ? 'error-ring' : ''}`}>
+                            <User size={18} />
                             <input
                                 type="text"
-                                readOnly
-                                value={room}
-                                style={{ background: '#f1f5f9', cursor: 'default' }}
+                                placeholder="Enter your name..."
+                                value={username}
+                                onChange={(e) => { setUsername(e.target.value); clearError(); }}
                             />
                         </div>
                     </div>
-                    <button className="btn-primary" style={{ marginTop: '20px' }} onClick={() => joinRoom(true)}>
-                        Initialize Space <Zap size={18} />
-                    </button>
-                    <button onClick={() => setMode('selection')} style={{ display: 'block', margin: '15px auto 0', background: 'none', border: 'none', color: '#64748b', fontSize: '0.85rem', cursor: 'pointer' }}>
-                        Back to Selection
-                    </button>
-                </div>
-            )}
 
-            {mode === 'join' && (
-                <div className="join-flow" style={{ animation: 'fadeIn 0.3s ease' }}>
                     <div className="input-group">
-                        <label>Room Authorization Code</label>
-                        <div className="input-field-wrapper">
+                        <label>
+                            Room ID
+                            {roomFromUrl && (
+                                <span className="room-locked-badge">
+                                    <Lock size={11} /> Invite Link
+                                </span>
+                            )}
+                        </label>
+                        <div className={`input-field-wrapper ${!room && displayError ? 'error-ring' : ''} ${roomFromUrl || isCreating ? 'field-locked' : ''}`}>
                             <Hash size={18} />
                             <input
                                 type="text"
-                                placeholder="Paste code here..."
+                                placeholder={isCreating ? 'Auto-generated code' : 'Paste room code...'}
                                 value={room}
-                                onChange={(e) => setRoom(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && joinRoom()}
+                                readOnly={isCreating || roomFromUrl}
+                                onChange={(e) => { if (!isCreating && !roomFromUrl) { setRoom(e.target.value.toUpperCase()); clearError(); } }}
+                                onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
+                                style={(isCreating || roomFromUrl) ? { fontFamily: 'monospace', fontWeight: 700, letterSpacing: '0.05em', color: 'var(--primary)' } : {}}
                             />
+                            {isCreating && !roomFromUrl && (
+                                <button className="auto-gen-btn" title="Regenerate Code" onClick={handleSwitchToCreate}>
+                                    <Zap size={14} />
+                                </button>
+                            )}
+                            {roomFromUrl && (
+                                <div className="lock-icon-badge" title="Room from invite link — cannot be changed">
+                                    <Lock size={14} />
+                                </div>
+                            )}
                         </div>
+                        {isCreating && <p className="helper-text">Share this code with people you want to invite.</p>}
+                        {roomFromUrl && <p className="helper-text" style={{ color: 'var(--primary)' }}>Joined via invite link. Room ID is locked.</p>}
                     </div>
-                    <button className="btn-primary" style={{ marginTop: '20px' }} onClick={() => joinRoom(false)}>
-                        Enter Room <Zap size={18} />
-                    </button>
-                    <button onClick={() => setMode('selection')} style={{ display: 'block', margin: '15px auto 0', background: 'none', border: 'none', color: '#64748b', fontSize: '0.85rem', cursor: 'pointer' }}>
-                        Back to Selection
+
+                    {displayError && (
+                        <div className="custom-error-container">
+                            <AlertCircle size={16} />
+                            <span>{displayError}</span>
+                            {localError.includes('does not exist') && (
+                                <button
+                                    className="error-action-btn"
+                                    onClick={handleSwitchToCreate}
+                                >
+                                    Create Instead
+                                </button>
+                            )}
+                        </div>
+                    )}
+
+                    <button className="btn-primary" style={{ marginTop: '4px' }} onClick={handleSubmit} disabled={isChecking}>
+                        {isChecking
+                            ? <><span className="btn-spinner" /> Checking...</>
+                            : isCreating
+                                ? <>Create & Enter <Zap size={18} /></>
+                                : <>Join Room <ArrowRight size={18} /></>
+                        }
                     </button>
                 </div>
-            )}
 
-            <div style={{ textAlign: 'center', fontSize: '0.75rem', color: '#94a3b8', marginTop: '16px' }}>
-                <ShieldCheck size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
-                Quantum-ready encryption active
+                {/* Footer */}
+                <div className="login-footer">
+                    <div className="security-tag">
+                        <ShieldCheck size={14} /> Quantum-ready Encryption
+                    </div>
+                </div>
+            </div>
+
+            <div className="dev-watermark">
+                <div className="watermark-main">
+                    Developed by <span>Sam</span>
+                </div>
+                <a href="https://github.com/owsam22" target="_blank" rel="noopener noreferrer" className="watermark-link">
+                    <Github size={14} /> github.com/owsam22
+                </a>
             </div>
         </div>
     );

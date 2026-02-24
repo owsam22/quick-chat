@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings, Moon, Sun, User, Shield, Info, Menu } from 'lucide-react';
+import { Settings, Moon, Sun, User, Shield, Info, Menu, Github } from 'lucide-react';
 
 interface SettingsTabProps {
     darkMode: boolean;
@@ -62,6 +62,30 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ darkMode, setDarkMode, onMobi
                             <div>
                                 <div className="setting-label">System Version</div>
                                 <div className="setting-desc">v2.5.0 Premium Hub</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="settings-section glass-card">
+                    <h3>Developer Network</h3>
+                    <div className="setting-item">
+                        <div className="setting-info">
+                            <div className="setting-icon"><User size={18} /></div>
+                            <div>
+                                <div className="setting-label">Creator</div>
+                                <div className="setting-desc">Sam</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="setting-item">
+                        <div className="setting-info">
+                            <div className="setting-icon"><Github size={18} /></div>
+                            <div>
+                                <div className="setting-label">Source Node</div>
+                                <a href="https://github.com/owsam22" target="_blank" rel="noopener noreferrer" className="github-link">
+                                    github.com/owsam22
+                                </a>
                             </div>
                         </div>
                     </div>
