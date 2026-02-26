@@ -68,6 +68,24 @@
     }
 }
 
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
 /* Layout */
 .chat-window-container {
     width: 100%;
@@ -1535,11 +1553,15 @@
 .btn-primary:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    background: linear-gradient(135deg, #5759d5, #4039bd);
+
 }
 
 .btn-primary:disabled {
     opacity: 0.7;
     cursor: not-allowed;
+    background: linear-gradient(135deg, #5759d5, #4039bd);
+
 }
 
 /* Spinner */

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Hash, Zap, ShieldCheck, Bot, PlusSquare, ArrowRight, Github, AlertCircle, Lock, Loader2 } from 'lucide-react';
 
 interface LoginProps {
@@ -15,9 +15,17 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joinRoom, error: externalError, roomFromUrl, socket }) => {
     const [isCreating, setIsCreating] = useState(false);
     const [localError, setLocalError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    
+    const [isChecking, setIsChecking] = useState(false);
+    const [isJoining, setIsJoining] = useState(false); // New state for final transition
+
     const displayError = externalError || localError;
+
+    // Reset loading state if an external error (from backend) arrives
+    useEffect(() => {
+        if (externalError) {
+            setIsJoining(false);
+        }
+    }, [externalError]);
 
     const clearError = () => { if (localError) setLocalError(''); };
 
@@ -44,32 +52,34 @@ const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joi
             return;
         }
 
-        setIsLoading(true);
-        setLocalError('');
-
         if (isCreating) {
+            setLocalError('');
+            setIsJoining(true); // Start loading animation
             joinRoom(true);
-            // Note: If joinRoom doesn't navigate away immediately, 
-            // you might want to handle setIsLoading(false) in a callback or parent
             return;
         }
 
         // For join mode: validate room exists first
+        setIsChecking(true);
+        setLocalError('');
         socket.emit('check_room', room, (response: { exists: boolean }) => {
+            setIsChecking(false);
             if (response.exists) {
+                setIsJoining(true); // Start loading animation
                 joinRoom(false);
             } else {
-                setIsLoading(false);
-                setLocalError('This room does not exist or has expired.');
+                setLocalError('This room does not exist or has expired. Try creating a new one!');
                 setIsCreating(false);
             }
         });
     };
 
+    // Helper to determine button state
+    const isLoading = isChecking || isJoining;
+
     return (
         <div className="login-wrapper">
             <div className="login-container glass-card">
-
                 {/* Header */}
                 <div className="login-header">
                     <div className="logo-container">
@@ -79,27 +89,25 @@ const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joi
                     <p>{isCreating ? 'Generate a new room and share the code' : 'Enter a room code to connect'}</p>
                 </div>
 
-                {/* Mode Toggle */}
                 {!roomFromUrl && (
                     <div className="mode-toggle-row">
                         <button
+                            disabled={isLoading}
                             className={`mode-toggle-btn ${!isCreating ? 'active' : ''}`}
                             onClick={handleSwitchToJoin}
-                            disabled={isLoading}
                         >
                             <ArrowRight size={15} /> Join Room
                         </button>
                         <button
+                            disabled={isLoading}
                             className={`mode-toggle-btn ${isCreating ? 'active' : ''}`}
                             onClick={handleSwitchToCreate}
-                            disabled={isLoading}
                         >
                             <PlusSquare size={15} /> Create Room
                         </button>
                     </div>
                 )}
 
-                {/* Inputs */}
                 <div className="login-form">
                     <div className="input-group">
                         <label>Display Name</label>
@@ -130,17 +138,11 @@ const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joi
                                 type="text"
                                 placeholder={isCreating ? 'Auto-generated code' : 'Paste room code...'}
                                 value={room}
-                                readOnly={isCreating || roomFromUrl}
-                                disabled={isLoading}
+                                readOnly={isCreating || roomFromUrl || isLoading}
                                 onChange={(e) => { if (!isCreating && !roomFromUrl) { setRoom(e.target.value.toUpperCase()); clearError(); } }}
-                                onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
+                                onKeyPress={(e) => e.key === 'Enter' && !isLoading && handleSubmit()}
                                 style={(isCreating || roomFromUrl) ? { fontFamily: 'monospace', fontWeight: 700, letterSpacing: '0.05em', color: 'var(--primary)' } : {}}
                             />
-                            {isCreating && !roomFromUrl && (
-                                <button className="auto-gen-btn" title="Regenerate Code" onClick={handleSwitchToCreate} disabled={isLoading}>
-                                    <Zap size={14} />
-                                </button>
-                            )}
                         </div>
                     </div>
 
@@ -151,33 +153,33 @@ const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joi
                         </div>
                     )}
 
-                    <button 
-                        className="btn-primary" 
-                        style={{ marginTop: '4px' }} 
-                        onClick={handleSubmit} 
+                    <button
+                        className={`btn-primary ${isLoading ? 'btn-loading' : ''}`}
+                        style={{ marginTop: '4px' }}
+                        onClick={handleSubmit}
                         disabled={isLoading}
                     >
-                        {isLoading ? (
-                            <>
-                                <Loader2 size={18} className="animate-spin" />
-                                Connecting...
-                            </>
-                        ) : isCreating ? (
-                            <>Create & Enter <Zap size={18} /></>
-                        ) : (
-                            <>Join Room <ArrowRight size={18} /></>
+                        {isChecking && (
+                            <><Loader2 className="spinner-icon" size={18} /> Checking Room...</>
+                        )}
+                        {isJoining && (
+                            <><Loader2 className="spinner-icon" size={18} /> Entering Room...</>
+                        )}
+                        {!isChecking && !isJoining && (
+                            isCreating
+                                ? <>Create & Enter <Zap size={18} /></>
+                                : <>Join Room <ArrowRight size={18} /></>
                         )}
                     </button>
                 </div>
 
-                {/* Footer */}
                 <div className="login-footer">
                     <div className="security-tag">
                         <ShieldCheck size={14} /> Quantum-ready Encryption
                     </div>
                 </div>
             </div>
-
+            {/* ... Developer Watermark ... */}
             <div className="dev-watermark">
                 <div className="watermark-main">
                     Developed by <span>Sam</span>
