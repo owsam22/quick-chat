@@ -89,10 +89,10 @@
 /* Layout */
 .chat-window-container {
     width: 100%;
-    height: 100vh;
-    /* Fallback */
+    height: 100%;
     height: 100dvh;
     display: flex;
+    flex-direction: column;
     overflow: hidden;
     position: relative;
     background: transparent; /* Use glass-card for background */
@@ -340,6 +340,7 @@
 
 .chat-header {
     height: 72px;
+    flex-shrink: 0; /* Keep header size fixed */
     padding: 0 24px;
     display: flex;
     align-items: center;

@@ -33,12 +33,16 @@
 
 body {
     font-family: 'Outfit', sans-serif;
-    background-color: var(--bg-main);
+    background-color: transparent; /* Pattern component handles background color */
     color: var(--text-main);
-    min-height: 100vh;
-    min-height: 100dvh;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
     overflow: hidden;
-    position: relative;
+    position: fixed; /* Lock body position */
+    top: 0;
+    left: 0;
+    transition: color 0.3s ease;
 }
 
 body::before {
@@ -79,12 +83,12 @@ body::before {
 }
 
 #root {
-    height: 100vh;
-    height: 100dvh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .glass-card {
