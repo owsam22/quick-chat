@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { User, Hash, Zap, ShieldCheck, Bot, PlusSquare, ArrowRight, Github, AlertCircle, Lock, Loader2 } from 'lucide-react';
 
 interface LoginProps {
@@ -111,6 +111,7 @@ const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joi
                                 value={username}
                                 disabled={isLoading}
                                 onChange={(e) => { setUsername(e.target.value); clearError(); }}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
                             />
                         </div>
                     </div>
@@ -133,7 +134,7 @@ const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joi
                                 readOnly={isCreating || roomFromUrl}
                                 disabled={isLoading}
                                 onChange={(e) => { if (!isCreating && !roomFromUrl) { setRoom(e.target.value.toUpperCase()); clearError(); } }}
-                                onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
                                 style={(isCreating || roomFromUrl) ? { fontFamily: 'monospace', fontWeight: 700, letterSpacing: '0.05em', color: 'var(--primary)' } : {}}
                             />
                             {isCreating && !roomFromUrl && (
