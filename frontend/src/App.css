@@ -2,9 +2,9 @@
 :root {
     --primary: #6366f1;
     --primary-hover: #4f46e5;
-    --bg-main: #f8fafc;
-    --bg-card: rgba(255, 255, 255, 0.8);
-    --bg-sidebar: rgba(248, 250, 252, 0.9);
+    --bg-main: #f8fafce6; /* Semi-transparent */
+    --bg-card: rgba(255, 255, 255, 0.7);
+    --bg-sidebar: rgba(248, 250, 252, 0.85);
     --text-main: #1e293b;
     --text-muted: #64748b;
     --border-color: rgba(226, 232, 240, 0.6);
@@ -25,9 +25,9 @@
 [data-theme="dark"] {
     --primary: #818cf8;
     --primary-hover: #6366f1;
-    --bg-main: #0f172a;
-    --bg-card: rgba(30, 41, 59, 0.8);
-    --bg-sidebar: rgba(15, 23, 42, 0.9);
+    --bg-main: #0f172ae6; /* Semi-transparent */
+    --bg-card: rgba(30, 41, 59, 0.7);
+    --bg-sidebar: rgba(15, 23, 42, 0.85);
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
     --border-color: rgba(51, 65, 85, 0.4);
@@ -95,7 +95,7 @@
     display: flex;
     overflow: hidden;
     position: relative;
-    background: var(--bg-main);
+    background: transparent; /* Use glass-card for background */
     padding-top: env(safe-area-inset-top, 0);
     padding-bottom: env(safe-area-inset-bottom, 0);
     /* Safari Fixes */
@@ -108,6 +108,9 @@
         max-width: 1400px;
         height: 90vh;
         margin: auto;
+        /* Add slight border to separate from animated background */
+        border: 1px solid var(--border-color);
+        box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.15);
     }
 }
 
@@ -1264,7 +1267,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: var(--bg-main);
+    background: transparent;
     padding: 24px;
     overflow: auto;
 }
@@ -1463,7 +1466,7 @@
 .input-field-wrapper>svg:first-child {
     position: absolute;
     left: 14px;
-    color: #94a3b8;
+    color: #293a53;
     flex-shrink: 0;
     pointer-events: none;
 }
@@ -1488,7 +1491,7 @@
 }
 
 .input-field-wrapper input::placeholder {
-    color: #94a3b8;
+    color: #333a45;
     font-weight: 400;
 }
 
@@ -1682,7 +1685,12 @@
 
 /* Watermark */
 .dev-watermark {
-    margin-top: 24px;
+    margin-top: 32px;
+    padding: 12px 24px;
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1690,17 +1698,18 @@
     animation: fadeIn 1s ease;
     position: relative;
     z-index: 1;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .watermark-main {
     font-size: 0.82rem;
-    color: #94a3b8;
+    color: #717b89;
     font-weight: 500;
 }
 
 .watermark-main span {
     font-weight: 800;
-    color: #475569;
+    color: #1f2b3c;
 }
 
 [data-theme="dark"] .watermark-main span {
@@ -1712,7 +1721,7 @@
     align-items: center;
     gap: 5px;
     font-size: 0.75rem;
-    color: #6366f1;
+    color: #3c3d8b;
     text-decoration: none;
     font-weight: 600;
     padding: 5px 12px;

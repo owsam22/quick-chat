@@ -176,65 +176,65 @@ function App() {
         bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messageList]);
 
-    if (!showChat) {
-        return (
-            <Login
-                username={username}
-                setUsername={setUsername}
-                room={room}
-                setRoom={setRoom}
-                joinRoom={joinRoom}
-                error={error}
-                roomFromUrl={roomFromUrl}
-                socket={socket}
-            />
-        );
-    }
-
     return (
-        <div className="chat-window-container glass-card">
-            <Sidebar
-                isOpen={sidebarOpen}
-                onClose={() => setSidebarOpen(false)}
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                room={room}
-            />
-
-            {activeTab === 'chat' && (
-                <ChatArea
-                    room={room}
+        <React.Fragment>
+            {!showChat ? (
+                <Login
                     username={username}
-                    participantCount={participantCount}
-                    roomUsers={roomUsers}
-                    typists={typists}
+                    setUsername={setUsername}
+                    room={room}
+                    setRoom={setRoom}
+                    joinRoom={joinRoom}
+                    error={error}
+                    roomFromUrl={roomFromUrl}
                     socket={socket}
-                    messageList={messageList}
-                    currentMessage={currentMessage}
-                    setCurrentMessage={setCurrentMessage}
-                    sendMessage={sendMessage}
-                    onMobileMenuToggle={() => setSidebarOpen(true)}
-                    onCopyRoomId={copyToClipboard}
-                    onShowQR={() => setShowQR(true)}
-                    onShare={handleShare}
-                    onLogout={leaveRoom}
-                    copied={copied}
-                    bottomRef={bottomRef}
                 />
-            )}
+            ) : (
+                <div className="chat-window-container glass-card">
+                    <Sidebar
+                        isOpen={sidebarOpen}
+                        onClose={() => setSidebarOpen(false)}
+                        activeTab={activeTab}
+                        setActiveTab={setActiveTab}
+                        room={room}
+                    />
 
-            {activeTab === 'search' && <SearchTab onMobileMenuToggle={() => setSidebarOpen(true)} />}
-            {activeTab === 'newRoom' && <NewRoomTab onMobileMenuToggle={() => setSidebarOpen(true)} />}
-            {activeTab === 'settings' && (
-                <SettingsTab
-                    darkMode={darkMode}
-                    setDarkMode={setDarkMode}
-                    onMobileMenuToggle={() => setSidebarOpen(true)}
-                />
-            )}
+                    {activeTab === 'chat' && (
+                        <ChatArea
+                            room={room}
+                            username={username}
+                            participantCount={participantCount}
+                            roomUsers={roomUsers}
+                            typists={typists}
+                            socket={socket}
+                            messageList={messageList}
+                            currentMessage={currentMessage}
+                            setCurrentMessage={setCurrentMessage}
+                            sendMessage={sendMessage}
+                            onMobileMenuToggle={() => setSidebarOpen(true)}
+                            onCopyRoomId={copyToClipboard}
+                            onShowQR={() => setShowQR(true)}
+                            onShare={handleShare}
+                            onLogout={leaveRoom}
+                            copied={copied}
+                            bottomRef={bottomRef}
+                        />
+                    )}
 
-            {showQR && <QRModal room={room} onClose={() => setShowQR(false)} onShare={handleShare} />}
-        </div>
+                    {activeTab === 'search' && <SearchTab onMobileMenuToggle={() => setSidebarOpen(true)} />}
+                    {activeTab === 'newRoom' && <NewRoomTab onMobileMenuToggle={() => setSidebarOpen(true)} />}
+                    {activeTab === 'settings' && (
+                        <SettingsTab
+                            darkMode={darkMode}
+                            setDarkMode={setDarkMode}
+                            onMobileMenuToggle={() => setSidebarOpen(true)}
+                        />
+                    )}
+
+                    {showQR && <QRModal room={room} onClose={() => setShowQR(false)} onShare={handleShare} />}
+                </div>
+            )}
+        </React.Fragment>
     );
 }
 

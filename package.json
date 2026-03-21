@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "lucide-react": "^0.575.0",
-    "socket.io-client": "^4.8.3"
+    "socket.io-client": "^4.8.3",
+    "styled-components": "^6.3.12"
   }
 }

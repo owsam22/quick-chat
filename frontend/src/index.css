@@ -34,14 +34,48 @@
 body {
     font-family: 'Outfit', sans-serif;
     background-color: var(--bg-main);
-    background-image:
-        radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.05) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(96, 165, 250, 0.05) 0px, transparent 50%);
     color: var(--text-main);
     min-height: 100vh;
     min-height: 100dvh;
     overflow: hidden;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200%; /* Wider for smooth sliding */
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(135deg, transparent 18.75%, #3b82f6 0 31.25%, transparent 0),
+      linear-gradient(45deg, transparent 18.75%, #3b82f6 0 31.25%, transparent 0),
+      linear-gradient(135deg, transparent 18.75%, #3b82f6 0 31.25%, transparent 0),
+      linear-gradient(45deg, transparent 18.75%, #3b82f6 0 31.25%, transparent 0);
+    background-size: 60px 60px;
+    background-position: 0 0, 0 0, 30px 30px, 30px 30px;
+    animation: slide-bg 10s linear infinite;
+    opacity: 0.4;
+}
+
+[data-theme="dark"] body::before {
+    background: linear-gradient(135deg, transparent 18.75%, #6366f1 0 31.25%, transparent 0),
+      linear-gradient(45deg, transparent 18.75%, #6366f1 0 31.25%, transparent 0),
+      linear-gradient(135deg, transparent 18.75%, #6366f1 0 31.25%, transparent 0),
+      linear-gradient(45deg, transparent 18.75%, #6366f1 0 31.25%, transparent 0);
+    background-size: 60px 60px;
+    opacity: 0.35;
+}
+
+@keyframes slide-bg {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-60px); /* Move one tile width */
+    }
 }
 
 #root {
