@@ -25,7 +25,7 @@
 
 ## 🚀 Live Demo
 
-🔗 https://owsam-quickchat.vercel.app/
+🔗 https://owsam22-quickchat.vercel.app/
 
 ---
 
@@ -171,7 +171,7 @@ QuickChat/
 ## 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/owsam22/chat-room.git
+git clone https://github.com/owsam22/quick-chat.git
 cd chat-room
 ```
 
