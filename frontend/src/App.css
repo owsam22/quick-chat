@@ -108,6 +108,7 @@
         max-width: 1400px;
         height: 90vh;
         margin: auto;
+        flex-direction: row; /* Sidebar + Chat side by side on desktop */
         /* Add slight border to separate from animated background */
         border: 1px solid var(--border-color);
         box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.15);
@@ -334,6 +335,8 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    min-height: 0; /* Critical for flex children to not overflow parent */
+    overflow: hidden; /* Scroll is handled by .message-container */
     background: var(--bg-card);
     backdrop-filter: blur(12px);
 }
@@ -971,9 +974,12 @@
 
 .message-wrapper {
     position: relative;
-    /* Swipe container styles */
+    /* Allow pan-y scrolling but also allow native text selection on long-press */
     touch-action: pan-y;
     overflow: visible;
+    /* Use pointer-events properly so text can still be selected */
+    -webkit-user-select: text;
+    user-select: text;
 }
 
 /* Swipe Indicator Helper */
@@ -1075,6 +1081,14 @@
 .message-input-area {
     padding: 16px 24px calc(16px + env(safe-area-inset-bottom, 0));
     background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    /* Sticky so it never gets pushed off-screen by OS selection toolbar or keyboard */
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    border-top: 1px solid var(--border-color);
+    flex-shrink: 0;
 }
 
 .input-container {
