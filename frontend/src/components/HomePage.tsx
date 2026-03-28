@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, Zap, QrCode, Clock, Github, Sparkles, ArrowRight, Moon, Sun, Mail, ExternalLink, Heart } from 'lucide-react';
+import { MessageSquare, Zap, QrCode, Clock, Github, Sparkles, ArrowRight, Moon, Sun, Mail, ExternalLink, Heart, Linkedin } from 'lucide-react';
 import '../styles/HomePage.css';
 
 interface HomePageProps {
@@ -180,7 +180,17 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, darkMode, setDarkMode }
                                 <Github size={20} />
                             </a>
                             <a
-                                href="mailto:contact@quickchat.dev"
+                                href="https://linkedin.com/in/samarpan22"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="social-icon"
+                                title="LinkedIn Profile"
+                                aria-label="LinkedIn"
+                            >
+                                <Linkedin size={20} />
+                            </a>
+                            <a
+                                href="mailto:samarpan.works@gmail.com"
                                 className="social-icon"
                                 title="Send Email"
                                 aria-label="Email"
