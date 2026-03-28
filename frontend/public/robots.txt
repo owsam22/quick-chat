@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://quickchat-owsam22.vercel.app/sitemap.xml
