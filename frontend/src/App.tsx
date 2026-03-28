@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 import './App.css';
 
 // Import Components
+import HomePage from './components/HomePage';
 import Sidebar from './components/Sidebar';
 import Login from './components/Login';
 import ChatArea from './components/ChatArea';
@@ -18,6 +19,7 @@ function App() {
     const [username, setUsername] = useState('');
     const [room, setRoom] = useState('');
     const [showChat, setShowChat] = useState(false);
+    const [showHomePage, setShowHomePage] = useState(true);
     const [currentMessage, setCurrentMessage] = useState('');
     const [messageList, setMessageList] = useState<any[]>([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -142,6 +144,14 @@ function App() {
         }
     };
 
+    const handleHomePageNavigate = (action: 'join' | 'create') => {
+        if (action === 'create') {
+            const code = Math.random().toString(36).substring(2, 10).toUpperCase();
+            setRoom(code);
+        }
+        setShowHomePage(false);
+    };
+
     useEffect(() => {
         const handleReceiveMessage = (data: any) => {
             setMessageList((list) => [...list, data]);
@@ -180,7 +190,13 @@ function App() {
     return (
         <>
             <Pattern />
-            {!showChat ? (
+            {showHomePage ? (
+                <HomePage
+                    onNavigate={handleHomePageNavigate}
+                    darkMode={darkMode}
+                    setDarkMode={setDarkMode}
+                />
+            ) : !showChat ? (
                 <Login
                     username={username}
                     setUsername={setUsername}
@@ -190,6 +206,7 @@ function App() {
                     error={error}
                     roomFromUrl={roomFromUrl}
                     socket={socket}
+                    onBack={() => setShowHomePage(true)}
                 />
             ) : (
                 <div className="chat-window-container glass-card">

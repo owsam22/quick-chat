@@ -1332,12 +1332,47 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 20px 40px -10px rgba(99, 102, 241, 0.2);
 }
 
+/* Back Button - Top Level */
+.back-button-top {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: var(--glass);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    cursor: pointer;
+    color: var(--text-main);
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.back-button-top:hover {
+    background: var(--border-color);
+    transform: translateX(-2px);
+}
+
+.back-button-top:active {
+    transform: translateX(0);
+}
+
+[data-theme="dark"] .back-button-top {
+    background: rgba(30, 41, 59, 0.8);
+}
+
 /* Header */
 .login-header {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
+    position: relative;
 }
 
 .logo-container {

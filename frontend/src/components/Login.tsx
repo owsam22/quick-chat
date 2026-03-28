@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Hash, Zap, ShieldCheck, Bot, PlusSquare, ArrowRight, Github, AlertCircle, Lock, Loader2 } from 'lucide-react';
+import { User, Hash, Zap, ShieldCheck, Bot, PlusSquare, ArrowRight, Github, AlertCircle, Lock, Loader2, ChevronLeft } from 'lucide-react';
 
 interface LoginProps {
     username: string;
@@ -10,9 +10,10 @@ interface LoginProps {
     error?: string;
     roomFromUrl?: boolean;
     socket: any;
+    onBack?: () => void;
 }
 
-const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joinRoom, error: externalError, roomFromUrl, socket }) => {
+const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joinRoom, error: externalError, roomFromUrl, socket, onBack }) => {
     const [isCreating, setIsCreating] = useState(false);
     const [localError, setLocalError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -68,6 +69,17 @@ const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joi
 
     return (
         <div className="login-wrapper">
+            {onBack && !roomFromUrl && (
+                <button
+                    className="back-button-top"
+                    onClick={onBack}
+                    title="Back to Home"
+                    aria-label="Back to Home"
+                >
+                    <ChevronLeft size={20} />
+                </button>
+            )}
+            
             <div className="login-container glass-card">
 
                 {/* Header */}
