@@ -25,7 +25,7 @@
 
 ## 🚀 Live Demo
 
-🔗 https://quickchat-owsam22.vercel.app/
+🔗 https://quickchat.owsam22.com/
 
 ---
 
@@ -50,7 +50,7 @@ QuickChat is optimized for live, flowing conversations. Unlike simple ephemeral 
 # 🖼️ Preview
 
 <p align="center">
-  <a href="https://quickchat-owsam22.vercel.app/">
+  <a href="https://quickchat.owsam22.com/">
     <img src="./assets/preview.png" alt="QuickChat UI Preview" width="85%" />
   </a>
 </p>
