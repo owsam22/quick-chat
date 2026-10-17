@@ -80,7 +80,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, setActive
 
                     <div className="creator-footer">
                         <div className="creator-details">
-                            Developed by <span>Sam</span>
+                            Developed by <span>Samarpan</span>
                         </div>
                         <a href="https://github.com/owsam22" target="_blank" rel="noopener noreferrer" className="github-link">
                             <Github size={14} /> github.com/owsam22
