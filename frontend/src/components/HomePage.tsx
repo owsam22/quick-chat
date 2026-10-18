@@ -145,6 +145,50 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, darkMode, setDarkMode }
                         <span className="tech-tag">WebRTC</span>
                     </div>
                 </div>
+
+                <section id="privacy" className="legal-section glass-card">
+                    <h2>Privacy Policy</h2>
+                    <p>
+                        QuickChat does not require an account. When you join a room, your chosen display name and messages
+                        are shared with participants in that room. Messages are held in server memory while the room is
+                        active, up to a limit of 500 messages, and are removed when the room becomes empty.
+                    </p>
+                    <p>
+                        Files are transferred between participants using WebRTC. Connection setup information is
+                        exchanged through the chat service, and network traffic may be routed through configured
+                        connection relays when a direct connection is unavailable.
+                    </p>
+                    <p>
+                        QuickChat saves your light or dark theme preference in your browser's local storage. It does not
+                        store chat history there. Avoid sharing sensitive personal information in rooms, and remember
+                        that other room participants can copy or save content you share.
+                    </p>
+                    <p>
+                        Questions about this policy? Contact <a href="mailto:contact@owsam22.com">QuickChat support ~ @owsam22</a>.
+                    </p>
+                </section>
+
+                <section id="terms" className="legal-section glass-card">
+                    <h2>Terms of Service</h2>
+                    <p>
+                        By using QuickChat, you agree to use it lawfully and respectfully. Do not use the service to
+                        harass others, distribute unlawful or harmful material, interfere with the service, or attempt
+                        to access rooms or data without permission.
+                    </p>
+                    <p>
+                        You are responsible for the messages and files you share. Room content is visible to other
+                        participants, and QuickChat cannot control how they use or retain it. Do not share information
+                        unless you are comfortable disclosing it to everyone in the room.
+                    </p>
+                    <p>
+                        Rooms and their message history are temporary and may become unavailable when the room is
+                        empty. QuickChat is provided without a guarantee of uninterrupted availability or permanent
+                        message or file storage. The service may be changed, limited, or discontinued.
+                    </p>
+                    <p>
+                        For questions about these terms, contact <a href="mailto:contact@owsam22.com">QuickChat support ~ @owsam22</a>.
+                    </p>
+                </section>
             </main>
 
             {/* Footer */}
