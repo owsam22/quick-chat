@@ -2,6 +2,65 @@ import React from 'react';
 import { Menu, Zap, User, Copy, QrCode, PlusSquare, Send, CheckCircle2, Hash, Share2, X, Reply, Paperclip, File, Download, Loader2, LogOut } from 'lucide-react';
 import { useWebRTC } from '../hooks/useWebRTC';
 
+const messageUrlPattern = /\b(?:https?:\/\/)?(?:www\.)?(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}(?::\d+)?(?:[/?#][^\s]*)?/gi;
+
+const isLinkCandidate = (value: string): boolean => {
+    const hasExplicitProtocol = /^https?:\/\//i.test(value);
+
+    try {
+        const { hostname } = new URL(hasExplicitProtocol ? value : `https://${value}`);
+        const labels = hostname.toLowerCase().split('.');
+        const topLevelDomain = labels[labels.length - 1];
+        const domainLabel = labels[labels.length - 2];
+
+        if (!topLevelDomain || !/^[a-z]{2,}$/.test(topLevelDomain) || !domainLabel) return false;
+
+        return hasExplicitProtocol || (domainLabel.length >= 2 && /[a-z]/.test(domainLabel));
+    } catch {
+        return false;
+    }
+};
+
+const renderMessageWithLinks = (message: string): React.ReactNode[] => {
+    const parts: React.ReactNode[] = [];
+    let lastIndex = 0;
+
+    for (const match of message.matchAll(messageUrlPattern)) {
+        const matchedUrl = match[0];
+        const startIndex = match.index;
+        const previousCharacter = message[startIndex - 1];
+        if (previousCharacter && /[@\w.-]/.test(previousCharacter)) continue;
+
+        let url = matchedUrl;
+        while (/[.,!?;:]$/.test(url) || (url.endsWith(')') && (url.match(/\)/g)?.length || 0) > (url.match(/\(/g)?.length || 0))) {
+            url = url.slice(0, -1);
+        }
+
+        if (!url) continue;
+
+        if (!isLinkCandidate(url)) continue;
+
+        parts.push(message.slice(lastIndex, startIndex));
+        parts.push(
+            <React.Fragment key={`link-${startIndex}`}>
+                <a
+                    className="message-link"
+                    href={/^https?:\/\//i.test(url) ? url : `https://${url}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    {url}
+                </a>
+                {matchedUrl.slice(url.length)}
+            </React.Fragment>
+        );
+        lastIndex = startIndex + matchedUrl.length;
+    }
+
+    parts.push(message.slice(lastIndex));
+    return parts;
+};
+
 interface Message {
     id: string;
     author: string;
@@ -234,7 +293,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                                         </div>
                                     )}
                                     <div id={`msg-${msg.id}`}>
-                                        {msg.message}
+                                        {renderMessageWithLinks(msg.message)}
                                         {msg.fileInfo && (
                                             <div className="file-bubble-card" style={{
                                                 marginTop: '8px',
