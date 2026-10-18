@@ -165,24 +165,38 @@ const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joi
                         </div>
                     )}
 
-                    <button 
-                        className="btn-primary" 
-                        style={{ marginTop: '4px' }} 
-                        onClick={handleSubmit} 
-                        disabled={isLoading}
-                    >
-                        {isLoading ? (
-                            <>
-                                <Loader2 size={18} className="animate-spin" />
-                                Connecting...
-                            </>
-                        ) : isCreating ? (
-                            <>Create & Enter <Zap size={18} /></>
-                        ) : (
-                            <>Join Room <ArrowRight size={18} /></>
-                        )}
-                    </button>
+<button 
+    className="btn-primary" 
+    style={{ marginTop: '4px' }} 
+    onClick={handleSubmit} 
+    disabled={isLoading}
+>
+    {isLoading ? (
+        <>
+            <Loader2 size={18} className="animate-spin" />
+            Connecting...
+        </>
+    ) : isCreating ? (
+        <>Create & Enter <Zap size={18} /></>
+    ) : (
+        <>Join Room <ArrowRight size={18} /></>
+    )}
+</button>
+
+{/* Back to Home Button */}
+{onBack && !roomFromUrl && (
+    <button
+        type="button"
+        className="back-to-home-btn"
+        onClick={onBack}
+        disabled={isLoading}
+    >
+        <ChevronLeft size={18} />
+        Back to Home
+    </button>
+)}
                 </div>
+                
 
                 {/* Footer */}
                 <div className="login-footer">

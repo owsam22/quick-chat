@@ -1372,6 +1372,33 @@
 [data-theme="dark"] .back-button-top {
     background: rgba(30, 41, 59, 0.8);
 }
+/* back to home button */
+.back-to-home-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid var(--primary);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.back-to-home-btn:hover {
+    background: rgba(128, 128, 128, 0.12);
+}
+
+.back-to-home-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 
 /* Header */
 .login-header {
