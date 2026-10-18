@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
     plugins: [react()],
     server: {
+        host:true, //make sure to have this line for react prject
         port: 3000,
         proxy: {
             '/socket.io': {
