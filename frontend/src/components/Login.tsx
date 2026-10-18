@@ -194,7 +194,7 @@ const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joi
 
             <div className="dev-watermark">
                 <div className="watermark-main">
-                    Developed by <span>Sam</span>
+                    Developed by <span>Samarpan</span>
                 </div>
                 <a href="https://github.com/owsam22" target="_blank" rel="noopener noreferrer" className="watermark-link">
                     <Github size={14} /> github.com/owsam22

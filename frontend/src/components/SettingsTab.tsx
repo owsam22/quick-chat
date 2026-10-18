@@ -74,7 +74,7 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ darkMode, setDarkMode, onMobi
                             <div className="setting-icon"><User size={18} /></div>
                             <div>
                                 <div className="setting-label">Creator</div>
-                                <div className="setting-desc">Sam</div>
+                                <div className="setting-desc">Samarpan</div>
                             </div>
                         </div>
                     </div>
