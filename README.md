@@ -23,7 +23,7 @@
 
 ---
 
-## 🚀 Live Demo
+## 🚀 Quick Demo
 
 🔗 https://quickchat.owsam22.com/
 
