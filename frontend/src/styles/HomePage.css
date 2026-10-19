@@ -620,6 +620,12 @@
     font-weight: 600;
 }
 
+.footer-credit a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
 .footer-bottom {
     max-width: 1200px;
     margin: 2rem auto 0;
