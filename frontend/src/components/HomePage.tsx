@@ -243,7 +243,8 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, darkMode, setDarkMode }
                             </a>
                         </div>
                         <div className="footer-credit">
-                            Made with <Heart size={14} style={{ display: 'inline', verticalAlign: 'middle', color: '#ef4444', marginRight: '4px' }} /> by <strong>owsam22</strong>
+                            Made with <Heart size={14} style={{ display: 'inline', verticalAlign: 'middle', color: '#ef4444', marginRight: '4px' }} /> by 
+                            <strong><a href="https://owsam22.com" target="_blank" rel="noopener noreferrer">owsam22</a></strong>
                         </div>
                     </div>
                 </div>
