@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, Zap, QrCode, Clock, Github,Plus, Sparkles, ArrowRight, Moon, Sun, Mail, ExternalLink, Heart, Linkedin } from 'lucide-react';
+import { MessageSquare, Zap, QrCode, Clock, Github, Plus, Sparkles, ArrowRight, Moon, Sun, Mail, ExternalLink, Heart, Linkedin } from 'lucide-react';
 import '../styles/HomePage.css';
 
 interface HomePageProps {
@@ -11,36 +11,40 @@ interface HomePageProps {
 const HomePage: React.FC<HomePageProps> = ({ onNavigate, darkMode, setDarkMode }) => {
     return (
         <div className="homepage-container">
-{/* Header */}
-<header className="homepage-header">
-    <div className="header-content">
-        <div className="header-brand">
-            <div className="brand-icon">
-                <MessageSquare size={28} strokeWidth={2.5} />
-            </div>
-            <h1 className="brand-name">QuickChat</h1>
-        </div>
 
-        <div className="header-actions">
-            <button 
-                className="create-room-btn" 
-                onClick={() => onNavigate('create')} // Replace with your create room handler
-                aria-label="Create a new room"
-            >
-                <Plus size={18} strokeWidth={2.5} />
-                <span>Create Room</span>
-            </button>
+            {/* Header */}
+            <header className="homepage-header">
+                <div className="header-content">
+                    <div className="header-brand">
+                        <div className="brand-icon">
+                            <MessageSquare size={28} strokeWidth={2.5} />
+                        </div>
+                        <div className="brand-title-group">
+                            <h1 className="brand-name">QuickChat</h1>
+                            <span className="brand-subtitle">by owsam22</span>
+                        </div>
+                    </div>
 
-            <button
-                className="theme-toggle"
-                onClick={() => setDarkMode(!darkMode)}
-                aria-label="Toggle theme"
-            >
-                {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-        </div>
-    </div>
-</header>
+                    <div className="header-actions">
+                        <button
+                            className="create-room-btn"
+                            onClick={() => onNavigate('create')}
+                            aria-label="Create a new room"
+                        >
+                            <Plus size={18} strokeWidth={2.5} />
+                            <span>Create Room</span>
+                        </button>
+
+                        <button
+                            className="theme-toggle"
+                            onClick={() => setDarkMode(!darkMode)}
+                            aria-label="Toggle theme"
+                        >
+                            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+                        </button>
+                    </div>
+                </div>
+            </header>
 
             {/* Main Content */}
             <main className="homepage-main">
@@ -255,7 +259,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, darkMode, setDarkMode }
                             </a>
                         </div>
                         <div className="footer-credit">
-                            Made with <Heart size={14} style={{ display: 'inline', verticalAlign: 'middle', color: '#ef4444', marginRight: '4px' }} /> by 
+                            Made with <Heart size={14} style={{ display: 'inline', verticalAlign: 'middle', color: '#ef4444', marginRight: '4px' }} /> by
                             <strong><a href="https://owsam22.com" target="_blank" rel="noopener noreferrer">owsam22</a></strong>
                         </div>
                     </div>

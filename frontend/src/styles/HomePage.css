@@ -58,6 +58,7 @@
     font-weight: 700;
     color: var(--text-main);
     letter-spacing: -0.03em;
+    margin: 0;
 }
 
 .theme-toggle {
@@ -83,7 +84,21 @@
     align-items: center;
     gap: 0.75rem;
 }
+/* Container to stack title and subtitle vertically */
+.brand-title-group {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+}
 
+/* Subtitle styling */
+.brand-subtitle {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-muted, rgba(255, 255, 255, 0.6));
+    letter-spacing: 0.02em;
+    margin-top: 2px;
+}
 /* Create Room Button */
 .create-room-btn {
     display: inline-flex;
