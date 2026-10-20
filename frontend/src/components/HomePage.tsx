@@ -1,5 +1,6 @@
 import React from 'react';
 import { MessageSquare, Zap, QrCode, Clock, Github, Plus, Sparkles, ArrowRight, Moon, Sun, Mail, ExternalLink, Heart, Linkedin } from 'lucide-react';
+import QuickChatLogo from './QuickChatLogo';
 import '../styles/HomePage.css';
 
 interface HomePageProps {
@@ -16,9 +17,7 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, darkMode, setDarkMode }
             <header className="homepage-header">
                 <div className="header-content">
                     <div className="header-brand">
-                        <div className="brand-icon">
-                            <MessageSquare size={28} strokeWidth={2.5} />
-                        </div>
+                        <QuickChatLogo size={36} />
                         <div className="brand-title-group">
                             <h1 className="brand-name">QuickChat</h1>
                             <span className="brand-subtitle">by owsam22</span>
@@ -212,10 +211,11 @@ const HomePage: React.FC<HomePageProps> = ({ onNavigate, darkMode, setDarkMode }
                 <div className="footer-content">
                     <div className="footer-left">
                         <div className="footer-brand">
-                            <div className="footer-brand-icon">
-                                <MessageSquare size={20} strokeWidth={2.5} />
+                            <QuickChatLogo size={28} />
+                            <div className="brand-title-group">
+                                <span className="brand-name" style={{ fontSize: '1.25rem' }}>QuickChat</span>
+                                <span className="brand-subtitle">by owsam22</span>
                             </div>
-                            <span>QuickChat</span>
                         </div>
                         <p className="footer-description">
                             Instant anonymous chat rooms for events, seminars, and quick collaboration. Share rooms via QR code and start communicating immediately.
