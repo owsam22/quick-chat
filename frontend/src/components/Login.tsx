@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { User, Hash, Zap, ShieldCheck, Bot, PlusSquare, ArrowRight, Github, AlertCircle, Lock, Loader2, ChevronLeft } from 'lucide-react';
+import { User, Hash, Zap, ShieldCheck, PlusSquare, ArrowRight, Github, AlertCircle, Lock, Loader2, ChevronLeft } from 'lucide-react';
+import QuickChatLogo from './QuickChatLogo';
 
 interface LoginProps {
     username: string;
@@ -85,8 +86,8 @@ const Login: React.FC<LoginProps> = ({ username, setUsername, room, setRoom, joi
 
                 {/* Header */}
                 <div className="login-header">
-                    <div className="logo-container">
-                        <Bot size={40} strokeWidth={2.5} className="text-primary" />
+                    <div className="logo-container" style={{ background: 'transparent', boxShadow: 'none' }}>
+                        <QuickChatLogo size={48} />
                     </div>
                     <h1>QuickChat <span>{isCreating ? 'Create' : 'Join'}</span></h1>
                     <p>{isCreating ? 'Generate a new room and share the code' : 'Enter a room code to connect'}</p>

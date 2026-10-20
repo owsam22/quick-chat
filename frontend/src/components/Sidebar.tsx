@@ -4,11 +4,11 @@ import {
     Search,
     PlusCircle,
     Settings,
-    Bot,
     LogOut,
     Github,
     X
 } from 'lucide-react';
+import QuickChatLogo from './QuickChatLogo';
 
 interface SidebarProps {
     isOpen: boolean;
@@ -25,7 +25,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, activeTab, setActive
             <div className={`chat-sidebar ${isOpen ? 'open' : ''}`}>
                 <div className="sidebar-brand">
                     <div className="brand-l">
-                        <Bot size={32} strokeWidth={2.5} className="text-primary" />
+                        <QuickChatLogo size={32} />
                         <div className="brand-title-group">
                             <span className="brand-name" style={{ letterSpacing: '-0.03em' }}>QuickChat</span>
                             <span className="brand-subtitle">by owsam22</span>
